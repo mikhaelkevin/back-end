@@ -19,7 +19,7 @@ const getCandidateByDomicile = (domicileValue) => {
       [`%${domicileValue}%`],
       (error, result) => {
         if (error) return reject(error);
-        if (!result.rowCount) return reject(new ErrorResponse('Sorry, candidates is not found.', 404));
+        if (!result.rowCount) return reject(new ErrorResponse(`Sorry, candidates with ${domicileValue} is not found.`, 404));
         resolve(result);
       });
   });
