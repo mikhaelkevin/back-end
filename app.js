@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+// eslint-disable-next-line quotes
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
@@ -17,7 +19,7 @@ app.use(bodyParser.json());
 const usersRoutes = require('./routes/usersRoutes');
 
 // ROUTES
-app.use('/binary/', corsWithAllowList, usersRoutes);
+app.use('/auth', corsWithAllowList, usersRoutes);
 
 app.use(errorHandler);
 
