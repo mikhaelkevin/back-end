@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 const usersRoutes = require('./routes/usersRoutes');
 
 // ROUTES
-app.use('/binary/', corsWithAllowList, usersRoutes);
+app.use('/', corsWithAllowList, usersRoutes);
 
 app.use(errorHandler);
 

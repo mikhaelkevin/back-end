@@ -1,12 +1,12 @@
 
 const usersRoutes = require('express').Router();
-const urlencoded = require('body-parser').urlencoded({ extended: false });
+// const urlencoded = require('body-parser').urlencoded({ extended: false });
 const asyncHandler = require('../app/middlewares/asyncHandler');
 
 // CONTROLLER DECLARATIONS
-const { getUsers } = require('../app/controllers/usersControllers');
+const { getCandidates } = require('../app/controllers/searchControllers');
 
 // ROUTE ENDPOINTS
-usersRoutes.get('/', urlencoded, asyncHandler(getUsers));
+usersRoutes.get('/users', asyncHandler(getCandidates));
 
 module.exports = usersRoutes;
