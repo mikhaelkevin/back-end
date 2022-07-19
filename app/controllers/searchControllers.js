@@ -25,7 +25,7 @@ const getCandidates = async (req, res) => {
   const sortBySkillRules = (sortBy === 'skill');
   if (sortBySkillRules) {
     const getCandidateResults = await getCandidateBySkills(value);
-    return res.status(200).send({ message: 'Data found!', data: getCandidateResults.rows });
+    return res.status(200).send({ message: 'Sort by skill success', data: getCandidateResults.rows });
   }
 
   const getAllCandidateResults = await getAllCandidates();
