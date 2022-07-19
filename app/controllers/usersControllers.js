@@ -1,5 +1,5 @@
 const { ErrorResponse } = require('../../utils/errorResponse');
-const { registerRecruiterModel, registerCandidateModel } = require('../models/User');
+const { registerRecruiterModel, registerCandidateModel, getUserEmailModel } = require('../models/User');
 const bcrypt = require('bcrypt');
 
 // const getUsers = async (req, res) => {
@@ -9,7 +9,6 @@ const bcrypt = require('bcrypt');
 // };
 
 const registerUser = async (req, res) => {
-  console.log(req.body);
   const { name, email, password, phonenumber, roleId } = req.body;
   const fieldIsBlank = !name || !email || !password || !phonenumber || !roleId;
   if (fieldIsBlank) {
@@ -48,4 +47,18 @@ const registerUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser };
+const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+  const getUserByEmail = await getUserEmailModel(email);
+  if (getUserByEmail?.rowCount === 0) throw new ErrorResponse('user not register', 401);
+  if (getUserByEmail) {
+    const checkPasswrod = bcrypt.compareSync(
+      password,
+      getUserByEmail?.rows[0]?.password
+    );
+    if (!checkPasswrod) throw new ErrorResponse('invalid password', 401);
+  }
+  res.status(200).send('login sukses');
+};
+
+module.exports = { registerUser, loginUser };
