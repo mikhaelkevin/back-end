@@ -15,9 +15,11 @@ app.use(bodyParser.json());
 
 // ROUTES DECLARATION
 const usersRoutes = require('./routes/usersRoutes');
+const testimonialsRoutes = require('./routes/testimonialsRoutes');
 
 // ROUTES
 app.use('/', corsWithAllowList, usersRoutes);
+app.use('/testimonials', corsWithAllowList, testimonialsRoutes);
 
 app.use(errorHandler);
 
