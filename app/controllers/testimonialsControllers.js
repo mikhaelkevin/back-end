@@ -16,7 +16,7 @@ const addTestimonial = async (req, res) => {
   // TESTIMONIAL ADD
   await addTestimonialModel({ testimonialMessage, userId });
 
-  res.status(200).send('Testimonial added!');
+  res.status(200).send({ message: 'Testimonial added!' });
 };
 
 const getTestimonials = async (req, res) => {
