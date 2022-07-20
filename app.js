@@ -19,10 +19,12 @@ app.use(bodyParser.json());
 // ROUTES DECLARATION
 const usersRoutes = require('./routes/usersRoutes');
 const testimonialsRoutes = require('./routes/testimonialsRoutes');
+const hiresRoutes = require('./routes/hiresRoutes');
 
 // ROUTES
 app.use('/', corsWithAllowList, usersRoutes);
 app.use('/testimonials', corsWithAllowList, testimonialsRoutes);
+app.use('/hires', corsWithAllowList, hiresRoutes);
 app.use('/auth', corsWithAllowList, usersRoutes);
 
 app.use(errorHandler);

@@ -66,4 +66,26 @@ const getUserEmailModel = (email) => {
     });
   });
 };
-module.exports = { registerRecruiterModel, registerCandidateModel, getUserEmailModel, getUserById };
+
+const getRecruiterById = (recruiterId) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM recruiter_profiles WHERE id = $1',
+      [recruiterId],
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+  });
+};
+
+const getCandidateById = (candidateId) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM candidate_profiles WHERE id = $1',
+      [candidateId],
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+  });
+};
+module.exports = { registerRecruiterModel, registerCandidateModel, getUserEmailModel, getUserById, getRecruiterById, getCandidateById };
