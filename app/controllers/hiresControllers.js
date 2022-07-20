@@ -6,7 +6,7 @@ const getHireMessages = async (req, res) => {
   res.status(200).send(getAllHiresResults.rows);
 };
 
-const getDetailHireMessages = async (req, res) => {
+const getDetailHireMessage = async (req, res) => {
   const { id } = req.params;
   const getDetailHireResult = await getDetailHire(id);
   res.status(200).send(getDetailHireResult.rows);
@@ -27,4 +27,4 @@ const addHireMessage = async (req, res) => {
   await insertHireMassage({ recruiterId, candidateId, messageSubject, description });
   res.status(200).send({ message: 'hire message sended' });
 };
-module.exports = { getHireMessages, getDetailHireMessages, addHireMessage };
+module.exports = { getHireMessages, getDetailHireMessage, addHireMessage };
