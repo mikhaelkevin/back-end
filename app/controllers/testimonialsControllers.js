@@ -5,7 +5,8 @@ const { ErrorResponse } = require('../../utils/errorResponse');
 const addTestimonial = async (req, res) => {
   const { testimonialMessage, userId } = req.body;
 
-  // USERID CHECKER
+  // FIELD CHECKER
+  if (!testimonialMessage) throw new ErrorResponse('Type something to add testimonial');
   await getUserById(userId);
 
   // TESTIMONIAL CHECKER BY USERID
@@ -16,7 +17,7 @@ const addTestimonial = async (req, res) => {
   // TESTIMONIAL ADD
   await addTestimonialModel({ testimonialMessage, userId });
 
-  res.status(200).send('Testimonial added!');
+  res.status(200).send({ message: 'Testimonial added!' });
 };
 
 const getTestimonials = async (req, res) => {

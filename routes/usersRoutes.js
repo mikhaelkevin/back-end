@@ -7,6 +7,6 @@ const asyncHandler = require('../app/middlewares/asyncHandler');
 const { getCandidates } = require('../app/controllers/searchControllers');
 
 // ROUTE ENDPOINTS
-usersRoutes.get('/users', asyncHandler(getCandidates));
+usersRoutes.get('/users', asyncHandler(getCandidates)); // SEARCH CANDIDATES
 
 module.exports = usersRoutes;
