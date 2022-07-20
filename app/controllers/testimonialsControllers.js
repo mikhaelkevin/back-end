@@ -5,7 +5,8 @@ const { ErrorResponse } = require('../../utils/errorResponse');
 const addTestimonial = async (req, res) => {
   const { testimonialMessage, userId } = req.body;
 
-  // USERID CHECKER
+  // FIELD CHECKER
+  if (!testimonialMessage) throw new ErrorResponse('Type something to add testimonial');
   await getUserById(userId);
 
   // TESTIMONIAL CHECKER BY USERID
