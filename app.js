@@ -1,6 +1,9 @@
+/* eslint-disable quotes */
+// eslint-disable-next-line quotes
 const express = require('express');
 const helmet = require('helmet');
 const bodyParser = require('body-parser');
+require('dotenv').config();
 
 // CONFIG
 const app = express();
@@ -20,6 +23,7 @@ const testimonialsRoutes = require('./routes/testimonialsRoutes');
 // ROUTES
 app.use('/', corsWithAllowList, usersRoutes);
 app.use('/testimonials', corsWithAllowList, testimonialsRoutes);
+app.use('/auth', corsWithAllowList, usersRoutes);
 
 app.use(errorHandler);
 
