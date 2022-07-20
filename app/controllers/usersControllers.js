@@ -1,6 +1,7 @@
 const { ErrorResponse } = require('../../utils/errorResponse');
 const { registerRecruiterModel, registerCandidateModel, getUserEmailModel } = require('../models/User');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 // const getUsers = async (req, res) => {
 //   const getUsersResult = await getUsersModel();
@@ -57,8 +58,20 @@ const loginUser = async (req, res) => {
       getUserByEmail?.rows[0]?.password
     );
     if (!checkPasswrod) throw new ErrorResponse('invalid password', 401);
+    if (checkPasswrod) {
+      const resultUser = getUserByEmail.rows[0];
+      console.log(resultUser);
+      const tokenPayload = { id: resultUser.id, email: resultUser.email, roleId: resultUser.role_id };
+      const token = jwt.sign(
+        tokenPayload,
+        process.env.PRIVATE_KEY,
+        { expiresIn: '24h' }
+      );
+      res.status(200).send({
+        token
+      });
+    }
   }
-  res.status(200).send('login sukses');
 };
 
 module.exports = { registerUser, loginUser };
