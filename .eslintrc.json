@@ -1,8 +1,7 @@
 {
     "env": {
         "commonjs": true,
-        "es2021": true,
-        "node": true
+        "es2021": true
     },
     "extends": [
         "standard"
@@ -11,6 +10,6 @@
         "ecmaVersion": "latest"
     },
     "rules": {
-        "semi": [2,"always"]
+        "semi" :[2, "always"] 
     }
 }
