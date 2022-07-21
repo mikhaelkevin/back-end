@@ -20,12 +20,13 @@ app.use(bodyParser.json());
 const usersRoutes = require('./routes/usersRoutes');
 const testimonialsRoutes = require('./routes/testimonialsRoutes');
 const hiresRoutes = require('./routes/hiresRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 // ROUTES
 app.use('/', corsWithAllowList, usersRoutes);
 app.use('/testimonials', corsWithAllowList, testimonialsRoutes);
 app.use('/hires', corsWithAllowList, hiresRoutes);
-app.use('/auth', corsWithAllowList, usersRoutes);
+app.use('/auth', corsWithAllowList, authRoutes);
 
 app.use(errorHandler);
 
