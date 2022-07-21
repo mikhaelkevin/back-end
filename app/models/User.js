@@ -1,18 +1,6 @@
 const db = require('../../configs/database');
 const { ErrorResponse } = require('../../utils/errorResponse');
 
-const getUserById = (userId) => {
-  return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM users WHERE id=$1',
-      [userId],
-      (error, result) => {
-        if (error) return reject(error);
-        if (!result.rowCount) return reject(new ErrorResponse('User not found!', 404));
-        resolve(result);
-      });
-  });
-};
-
 const registerRecruiterModel = (person) => {
   return new Promise((resolve, reject) => {
     db.query('INSERT INTO users (email, password, role_id) VALUES ($1, $2, $3) RETURNING *',
@@ -30,6 +18,18 @@ const registerRecruiterModel = (person) => {
               }
             });
         }
+      });
+  });
+};
+
+const getUserById = (userId) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM users WHERE id=$1',
+      [userId],
+      (error, result) => {
+        if (error) return reject(error);
+        if (!result.rowCount) return reject(new ErrorResponse('User not found!', 404));
+        resolve(result);
       });
   });
 };
@@ -88,4 +88,36 @@ const getCandidateById = (candidateId) => {
       });
   });
 };
-module.exports = { registerRecruiterModel, registerCandidateModel, getUserEmailModel, getUserById, getRecruiterById, getCandidateById };
+
+const getCandidateByUserId = (userId) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM candidate_profiles WHERE user_id = $1',
+      [userId],
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+  });
+};
+
+const getRecruiterByUserId = (recruiterId) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM recruiter_profiles WHERE user_id = $1',
+      [recruiterId],
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+  });
+};
+
+module.exports = {
+  registerRecruiterModel,
+  registerCandidateModel,
+  getUserEmailModel,
+  getUserById,
+  getRecruiterById,
+  getCandidateById,
+  getCandidateByUserId,
+  getRecruiterByUserId
+};
