@@ -1,11 +1,12 @@
 const errorHandler = (error, req, res, next) => {
-  console.log('Error =>', error);
+  // console.log('Error =>', error);
 
   const errorList = {
     duplicateEmail: error?.code === '23505' && error?.constraint === 'users_email_key',
     duplicatePhonenumber: error?.code === '23505' && error?.constraint === 'users_phonenumber_key',
     duplicateCompanyName: error?.code === '23505' && error?.constraint === 'recruiter_profile_company_name_key',
     overLimitInput: error?.code === '22001'
+    // unexpectedDataType: error?.code === '22P02'
   };
 
   if (errorList?.duplicateEmail) {

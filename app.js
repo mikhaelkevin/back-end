@@ -13,7 +13,6 @@ const port = 8000;
 const { errorHandler } = require('./app/middlewares/errorHandler');
 const corsWithAllowList = require('./configs/cors');
 app.use(helmet());
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // ROUTES DECLARATION
