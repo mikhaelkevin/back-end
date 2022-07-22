@@ -179,6 +179,11 @@ const addUserExperiences = async (req, res) => {
   if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
 
   const { position, companyName, startDate, endDate, description } = req.body;
+  const requiredFieldIsBlank = !position || !companyName;
+  const invalidDateRange = startDate >= endDate;
+  if (requiredFieldIsBlank) throw new ErrorResponse('Position and company name is required!');
+  if (invalidDateRange) throw new ErrorResponse('Start date must be less than end date!');
+
   await insertUserExperiences({ position, companyName, startDate, endDate, description, id });
   res.status(200).send({ message: 'experience has been added' });
 };
