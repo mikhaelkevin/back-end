@@ -11,7 +11,6 @@ const getProfile = async (req, res) => {
 const editProfile = async (req, res) => {
   const { userId } = req.params;
   const userCompleteData = await joinProfileAndUser(userId);
-  console.log('userCompleteData', userCompleteData);
 
   const profilePicture = req?.files?.profilePicture?.[0]?.path;
   const coverImage = req?.files?.coverImage?.[0]?.path;
@@ -48,7 +47,7 @@ const editProfile = async (req, res) => {
     };
 
     await editRecruiterInformation(requestData);
-    return res.status(200).send('Ini recruiter');
+    return res.status(200).send({ message: 'Edit profile success!' });
   } else if (isCandidate) {
     const { name, job, domicile, workPlace, description, skills, instagram, github } = req.body;
 
