@@ -22,12 +22,14 @@ const hiresRoutes = require('./routes/hiresRoutes');
 const authRoutes = require('./routes/authRoutes');
 const profilesRoutes = require('./routes/profilesRoutes');
 
-// ROUTES
-app.use('/', corsWithAllowList, usersRoutes);
+// PUBLIC ROUTES
+app.use('/auth', corsWithAllowList, authRoutes);
 app.use('/testimonials', corsWithAllowList, testimonialsRoutes);
+
+// PRIVATE ROUTES JWT REQUIRED
+app.use('/', corsWithAllowList, usersRoutes);
 app.use('/hires', corsWithAllowList, hiresRoutes);
 app.use('/profile', corsWithAllowList, profilesRoutes);
-app.use('/auth', corsWithAllowList, authRoutes);
 
 app.use(errorHandler);
 
