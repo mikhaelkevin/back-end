@@ -143,6 +143,7 @@ const deleteUserPortofolioModel = (portofolioId, profileId) => {
       [portofolioId, profileId],
       (error, result) => {
         if (error) return reject(error);
+        if (!result.rowCount) return reject(new ErrorResponse('Something wrong happened on deleting portofolio'));
         resolve(result);
       });
   });
