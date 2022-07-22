@@ -26,8 +26,8 @@ const profilesRoutes = require('./routes/profilesRoutes');
 app.use('/', corsWithAllowList, usersRoutes);
 app.use('/testimonials', corsWithAllowList, testimonialsRoutes);
 app.use('/hires', corsWithAllowList, hiresRoutes);
-app.use('/auth', corsWithAllowList, authRoutes);
 app.use('/profile', corsWithAllowList, profilesRoutes);
+app.use('/auth', corsWithAllowList, authRoutes);
 
 app.use(errorHandler);
 

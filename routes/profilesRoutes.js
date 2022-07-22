@@ -1,13 +1,19 @@
-const hiresRoutes = require('express').Router();
-// const urlencoded = require('body-parser').urlencoded({ extended: false });
+const profileRoutes = require('express').Router();
 const asyncHandler = require('../app/middlewares/asyncHandler');
+const urlencoded = require('body-parser').urlencoded({ extended: false });
 
 // CONTROLLER DECLARATIONS
-const { getProfile, editProfile } = require('../app/controllers/profilesControllers');
+const { getProfile, editProfile, getUserExperiences, addUserExperiences, updateUserExperiences, deleteUserExperiences } = require('../app/controllers/profilesControllers');
 const { multerFields } = require('../app/middlewares/multerHandler');
 
 // ROUTE ENDPOINTS
-hiresRoutes.get('/:userId', asyncHandler(getProfile))
+profileRoutes.get('/:id/experiences', asyncHandler(getUserExperiences))
+  .post('/:id/experiences', urlencoded, asyncHandler(addUserExperiences));
+
+profileRoutes.patch('/:profileId/experiences/:experienceId', urlencoded, asyncHandler(updateUserExperiences))
+  .delete('/:profileId/experiences/:experienceId', asyncHandler(deleteUserExperiences));
+
+profileRoutes.get('/:userId', asyncHandler(getProfile))
   .patch('/:userId', multerFields, asyncHandler(editProfile));
 
-module.exports = hiresRoutes;
+module.exports = profileRoutes;
