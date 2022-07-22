@@ -1,11 +1,6 @@
 const { ErrorResponse } = require('../../utils/errorResponse');
-const {
-  getCandidateById,
-  getUserById,
-  getCandidateByUserId,
-  getRecruiterByUserId, getUserExperiencesModel, getExperienceById, insertUserExperiences, updateUserExperiencesModel, deleteUserExperienceModel
-} = require('../models/User');
-const { editCandidateInformation, editRecruiterInformation } = require('../models/Profile');
+const { getUserById, getCandidateByUserId, getRecruiterByUserId, getCandidateById } = require('../models/User');
+const { editCandidateInformation, editRecruiterInformation, getUserExperiencesModel, getExperienceById, insertUserExperiences, updateUserExperiencesModel, deleteUserExperienceModel } = require('../models/Profile');
 
 const getProfile = async (req, res) => {
   const { userId } = req.params;
