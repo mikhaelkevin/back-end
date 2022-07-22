@@ -68,13 +68,14 @@ const editProfile = async (req, res) => {
     return res.status(200).send({ message: 'Edit profile success!' });
   } else if (isCandidate) {
     const { name, job, domicile, workPlace, description, skills, instagram, github } = req.body;
+    const stringifySkills = JSON.stringify(skills?.split(',')?.map(value => value.trim()));
 
     const newName = name || userCompleteData?.name;
     const newJob = job || userCompleteData?.job;
     const newDomicile = domicile || userCompleteData?.domicile;
     const newWorkPlace = workPlace || userCompleteData?.work_place;
     const newDescription = description || userCompleteData?.description;
-    const newSkills = skills || userCompleteData?.skills;
+    const newSkills = stringifySkills || userCompleteData?.skills;
     const newInstagram = instagram || userCompleteData?.instagram;
     const newGithub = github || userCompleteData?.github;
     const newProfilePicture = profilePicture || userCompleteData?.profilePicture;
