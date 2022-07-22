@@ -1,8 +1,23 @@
 const { ErrorResponse } = require('../../utils/errorResponse');
-const { getUserById, getCandidateByUserId, getRecruiterByUserId, getCandidateById } = require('../models/User');
+const {
+  getUserById,
+  getCandidateByUserId,
+  getRecruiterByUserId,
+  getCandidateById
+} = require('../models/User');
 const {
   editCandidateInformation,
-  editRecruiterInformation, getUserExperiencesModel, getExperienceById, insertUserExperiences, updateUserExperiencesModel, deleteUserExperienceModel, getUserPortofoliosModel, getPortofolioById, deleteUserPortofolioModel
+  editRecruiterInformation,
+  getUserExperiencesModel,
+  getExperienceById,
+  insertUserExperiences,
+  updateUserExperiencesModel,
+  deleteUserExperienceModel,
+  getUserPortofoliosModel,
+  getPortofolioById,
+  addUserPortofolioModel,
+  editUserPortofolioModel,
+  deleteUserPortofolioModel
 } = require('../models/Profile');
 
 const getProfile = async (req, res) => {
@@ -149,7 +164,7 @@ const updateUserExperiences = async (req, res) => {
 
   const { experienceId } = req.params;
   const experienceIdChecker = await getExperienceById(experienceId);
-  if (!experienceIdChecker?.rowCount) throw new ErrorResponse('ExperienceId not found');
+  if (!experienceIdChecker?.rowCount) throw new ErrorResponse('Experience not found');
 
   const { position, companyName, startDate, endDate, description } = req.body;
   const getExperience = await getExperienceById(experienceId);
@@ -195,17 +210,52 @@ const getUserPortofolios = async (req, res) => {
   res.status(200).send(getAllUserPortofolios.rows);
 };
 
-const deleteUserPortofolios = async (req, res) => {
+const addUserPortofolio = async (req, res) => {
   const { profileId } = req.params;
   const candidateChecker = await getCandidateById(profileId);
-  if (!candidateChecker?.rowCount) throw new ErrorResponse('CandidateId not found');
+  if (!candidateChecker.rowCount) throw new ErrorResponse('Candidate not found!', 404);
 
-  const { portofolioId } = req.params;
+  const { appName, link, type } = req.body;
+  const appPicture = req.file?.path;
+
+  if (!appName) throw new ErrorResponse('App name is required!');
+
+  await addUserPortofolioModel({ profileId, appName, link, type, appPicture });
+  res.status(200).send({ message: 'Portofolio successfuly added!' });
+};
+
+const editUserPortofolio = async (req, res) => {
+  const { profileId, portofolioId } = req.params;
+  const candidateChecker = await getCandidateById(profileId);
+  if (!candidateChecker.rowCount) throw new ErrorResponse('Candidate not found!', 404);
+
+  const { appName, link, type } = req.body;
+  const appPicture = req?.file?.path;
+
+  const portofolioData = await getPortofolioById(portofolioId);
+  if (!portofolioData?.rowCount) throw new ErrorResponse('Portofolio not found!', 404);
+  const tempPortofolioData = portofolioData?.rows?.[0];
+
+  const newAppName = appName || tempPortofolioData?.app_name;
+  const newLink = link || tempPortofolioData?.link;
+  const newType = type || tempPortofolioData?.type;
+  const newAppPicture = appPicture || tempPortofolioData?.app_picture;
+
+  await editUserPortofolioModel({ profileId, portofolioId, newAppName, newLink, newType, newAppPicture });
+
+  res.status(200).send({ message: 'Edit portofolio succesful!' });
+};
+
+const deleteUserPortofolio = async (req, res) => {
+  const { profileId, portofolioId } = req.params;
+  const candidateChecker = await getCandidateById(profileId);
+  if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
+
   const portofolioIdChecker = await getPortofolioById(portofolioId);
-  if (!portofolioIdChecker?.rowCount) throw new ErrorResponse('PortofolioId not found');
+  if (!portofolioIdChecker?.rowCount) throw new ErrorResponse('Portofolio not found');
 
-  await deleteUserPortofolioModel(portofolioId);
-  res.status(200).send({ message: 'experience has been deleted' });
+  await deleteUserPortofolioModel(portofolioId, profileId);
+  res.status(200).send({ message: 'Portofolio has been deleted' });
 };
 
 module.exports = {
@@ -216,5 +266,7 @@ module.exports = {
   getProfile,
   editProfile,
   getUserPortofolios,
-  deleteUserPortofolios
+  addUserPortofolio,
+  editUserPortofolio,
+  deleteUserPortofolio
 };
