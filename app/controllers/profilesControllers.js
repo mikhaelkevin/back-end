@@ -39,9 +39,9 @@ const editProfile = async (req, res) => {
   if (isRecruiter) {
     const { companyName, companyField, companyDomicile, description, email, phoneNumber, instagram, linkedin } = req.body;
 
-    const newCompanyName = companyName || userCompleteData?.company_name;
-    const newCompanyField = companyField || userCompleteData?.company_field;
-    const newCompanyDomicile = companyDomicile || userCompleteData?.company_domicile;
+    const newCompanyName = companyName || userCompleteData?.companyName;
+    const newCompanyField = companyField || userCompleteData?.companyField;
+    const newCompanyDomicile = companyDomicile || userCompleteData?.companyDomicile;
     const newDescription = description || userCompleteData?.description;
     const newEmail = email || userCompleteData?.email;
     const newPhoneNumber = phoneNumber || userCompleteData?.phoneNumber;
@@ -73,7 +73,7 @@ const editProfile = async (req, res) => {
     const newName = name || userCompleteData?.name;
     const newJob = job || userCompleteData?.job;
     const newDomicile = domicile || userCompleteData?.domicile;
-    const newWorkPlace = workPlace || userCompleteData?.work_place;
+    const newWorkPlace = workPlace || userCompleteData?.workPlace;
     const newDescription = description || userCompleteData?.description;
     const newSkills = stringifySkills || userCompleteData?.skills;
     const newInstagram = instagram || userCompleteData?.instagram;
@@ -113,7 +113,14 @@ const joinProfileAndUser = async (userId) => {
     const tempRecruiterData = recruiterData?.rows?.[0];
 
     const recruiterDataManipulation = {
-      ...tempRecruiterData,
+      id: tempRecruiterData.id,
+      companyName: tempRecruiterData.company_name,
+      companyField: tempRecruiterData.company_field,
+      companyDomicile: tempRecruiterData.company_domicile,
+      description: tempRecruiterData.description,
+      instagram: tempRecruiterData.instagram,
+      linkedin: tempRecruiterData.linkedin,
+      userId: tempRecruiterData.user_id,
       email: tempUserData.email,
       phoneNumber: tempUserData.phonenumber,
       roleId: tempUserData.role_id,
@@ -129,7 +136,16 @@ const joinProfileAndUser = async (userId) => {
     const tempCandidateData = candidateData?.rows?.[0];
 
     const candidateDataManipulation = {
-      ...tempCandidateData,
+      id: tempCandidateData.id,
+      name: tempCandidateData.name,
+      job: tempCandidateData.job,
+      domicile: tempCandidateData.domicile,
+      workPlace: tempCandidateData.work_place,
+      description: tempCandidateData.description,
+      skills: tempCandidateData.skills,
+      instagram: tempCandidateData.instagram,
+      github: tempCandidateData.github,
+      userId: tempCandidateData.user_id,
       email: tempUserData.email,
       roleId: tempUserData.role_id,
       profilePicture: tempUserData.profile_picture,
@@ -145,7 +161,16 @@ const getUserExperiences = async (req, res) => {
   const candidateChecker = await getCandidateById(id);
   if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
   const getAllUserExperiences = await getUserExperiencesModel(id);
-  res.status(200).send(getAllUserExperiences.rows);
+  const userExperiences = getAllUserExperiences?.rows?.map(value => ({
+    id: value?.id,
+    position: value?.position,
+    companyName: value?.company_name,
+    startDate: value?.start_date,
+    endDate: value?.end_date,
+    description: value?.description,
+    candidateProfileId: value?.candidate_profile_id
+  }));
+  res.status(200).send(userExperiences);
 };
 
 const addUserExperiences = async (req, res) => {
@@ -205,10 +230,20 @@ const deleteUserExperiences = async (req, res) => {
 
 const getUserPortofolios = async (req, res) => {
   const { id } = req.params;
+
   const candidateChecker = await getCandidateById(id);
   if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
+
   const getAllUserPortofolios = await getUserPortofoliosModel(id);
-  res.status(200).send(getAllUserPortofolios.rows);
+  const userPortofolios = getAllUserPortofolios?.rows?.map(value => ({
+    id: value?.id,
+    appName: value?.app_name,
+    link: value?.link,
+    type: value?.type,
+    appPicture: value?.app_picture,
+    candidateProfileId: value?.candidate_profile_id
+  }));
+  res.status(200).send(userPortofolios);
 };
 
 const addUserPortofolio = async (req, res) => {

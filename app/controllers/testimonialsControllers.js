@@ -22,8 +22,13 @@ const addTestimonial = async (req, res) => {
 
 const getTestimonials = async (req, res) => {
   const getAllTestimonialsResults = await getAllTestimonials();
+  const testimonialsList = getAllTestimonialsResults?.rows.map(value => ({
+    id: value?.id,
+    testimonialMessage: value?.testimonial_message,
+    userId: value?.user_id
+  }));
 
-  res.status(200).send(getAllTestimonialsResults.rows);
+  res.status(200).send(testimonialsList);
 };
 
 module.exports = { addTestimonial, getTestimonials };

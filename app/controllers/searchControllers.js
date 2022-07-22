@@ -13,23 +13,73 @@ const getCandidates = async (req, res) => {
   const sortByNameRules = ((!sortBy && value) || sortBy === 'name');
   if (sortByNameRules) {
     const getCandidateResults = await getCandidateByName(value);
-    return res.status(200).send(getCandidateResults.rows);
+    const candidateData = getCandidateResults?.rows?.map(value => ({
+      id: value?.id,
+      name: value?.name,
+      job: value?.job,
+      domicile: value?.domicile,
+      workPlace: value?.work_place,
+      description: value?.description,
+      skills: value?.skills,
+      instagram: value?.instagram,
+      github: value?.github,
+      userId: value?.user_id
+    }));
+    return res.status(200).send(candidateData);
   }
 
   const sortByDomicileRules = (sortBy === 'domicile');
   if (sortByDomicileRules) {
     const getCandidateResults = await getCandidateByDomicile(value);
-    return res.status(200).send(getCandidateResults.rows);
+    const candidateData = getCandidateResults?.rows?.map(value => ({
+      id: value?.id,
+      name: value?.name,
+      job: value?.job,
+      domicile: value?.domicile,
+      workPlace: value?.work_place,
+      description: value?.description,
+      skills: value?.skills,
+      instagram: value?.instagram,
+      github: value?.github,
+      userId: value?.user_id
+    }));
+    return res.status(200).send(candidateData);
   }
 
   const sortBySkillRules = (sortBy === 'skill');
   if (sortBySkillRules) {
     const getCandidateResults = await getCandidateBySkills(value);
-    return res.status(200).send(getCandidateResults.rows);
+    const candidateData = getCandidateResults?.rows?.map(value => ({
+      id: value?.id,
+      name: value?.name,
+      job: value?.job,
+      domicile: value?.domicile,
+      workPlace: value?.work_place,
+      description: value?.description,
+      skills: value?.skills,
+      instagram: value?.instagram,
+      github: value?.github,
+      userId: value?.user_id
+    }));
+    return res.status(200).send(candidateData);
   }
 
   const getAllCandidateResults = await getAllCandidates();
-  res.status(200).send(getAllCandidateResults.rows);
+
+  const candidateData = getAllCandidateResults?.rows?.map(value => ({
+    id: value?.id,
+    name: value?.name,
+    job: value?.job,
+    domicile: value?.domicile,
+    workPlace: value?.work_place,
+    description: value?.description,
+    skills: value?.skills,
+    instagram: value?.instagram,
+    github: value?.github,
+    userId: value?.user_id
+  }));
+
+  res.status(200).send(candidateData);
 };
 
 module.exports = { getCandidates };
