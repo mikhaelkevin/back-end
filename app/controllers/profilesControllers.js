@@ -1,6 +1,9 @@
 const { ErrorResponse } = require('../../utils/errorResponse');
 const { getUserById, getCandidateByUserId, getRecruiterByUserId, getCandidateById } = require('../models/User');
-const { editCandidateInformation, editRecruiterInformation, getUserExperiencesModel, getExperienceById, insertUserExperiences, updateUserExperiencesModel, deleteUserExperienceModel } = require('../models/Profile');
+const {
+  editCandidateInformation,
+  editRecruiterInformation, getUserExperiencesModel, getExperienceById, insertUserExperiences, updateUserExperiencesModel, deleteUserExperienceModel, getUserPortofoliosModel, getPortofolioById, deleteUserPortofolioModel
+} = require('../models/Profile');
 
 const getProfile = async (req, res) => {
   const { userId } = req.params;
@@ -184,4 +187,34 @@ const deleteUserExperiences = async (req, res) => {
   res.status(200).send({ message: 'experience has been deleted' });
 };
 
-module.exports = { getUserExperiences, addUserExperiences, updateUserExperiences, deleteUserExperiences, getProfile, editProfile };
+const getUserPortofolios = async (req, res) => {
+  const { id } = req.params;
+  const candidateChecker = await getCandidateById(id);
+  if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
+  const getAllUserPortofolios = await getUserPortofoliosModel(id);
+  res.status(200).send(getAllUserPortofolios.rows);
+};
+
+const deleteUserPortofolios = async (req, res) => {
+  const { profileId } = req.params;
+  const candidateChecker = await getCandidateById(profileId);
+  if (!candidateChecker?.rowCount) throw new ErrorResponse('CandidateId not found');
+
+  const { portofolioId } = req.params;
+  const portofolioIdChecker = await getPortofolioById(portofolioId);
+  if (!portofolioIdChecker?.rowCount) throw new ErrorResponse('PortofolioId not found');
+
+  await deleteUserPortofolioModel(portofolioId);
+  res.status(200).send({ message: 'experience has been deleted' });
+};
+
+module.exports = {
+  getUserExperiences,
+  addUserExperiences,
+  updateUserExperiences,
+  deleteUserExperiences,
+  getProfile,
+  editProfile,
+  getUserPortofolios,
+  deleteUserPortofolios
+};

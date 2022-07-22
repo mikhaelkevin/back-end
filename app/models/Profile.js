@@ -93,4 +93,45 @@ const deleteUserExperienceModel = (experienceId, profileId) => {
   });
 };
 
-module.exports = { getUserExperiencesModel, getExperienceById, insertUserExperiences, updateUserExperiencesModel, deleteUserExperienceModel, editCandidateInformation, editRecruiterInformation };
+const getUserPortofoliosModel = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM portofolios WHERE candidate_profile_id = $1', [id],
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+  });
+};
+
+const deleteUserPortofolioModel = (portofolioId) => {
+  return new Promise((resolve, reject) => {
+    db.query('DELETE FROM portofolios WHERE id = $1', [portofolioId], (error, result) => {
+      if (error) return reject(error);
+      resolve(result);
+    });
+  });
+};
+
+const getPortofolioById = (portofolioId) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM portofolios WHERE id = $1',
+      [portofolioId],
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+  });
+};
+
+module.exports = {
+  getUserExperiencesModel,
+  getExperienceById,
+  insertUserExperiences,
+  updateUserExperiencesModel,
+  deleteUserExperienceModel,
+  editCandidateInformation,
+  editRecruiterInformation,
+  getUserPortofoliosModel,
+  getPortofolioById,
+  deleteUserPortofolioModel
+};
