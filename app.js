@@ -12,6 +12,7 @@ const port = 8000;
 // MIDDLEWARES
 const { errorHandler } = require('./app/middlewares/errorHandler');
 const corsWithAllowList = require('./configs/cors');
+const { authorizationTokenHandler } = require('./app/middlewares/tokenHandler');
 app.use(helmet());
 app.use(bodyParser.json());
 
@@ -27,9 +28,9 @@ app.use('/auth', corsWithAllowList, authRoutes);
 app.use('/testimonials', corsWithAllowList, testimonialsRoutes);
 
 // PRIVATE ROUTES JWT REQUIRED
-app.use('/', corsWithAllowList, usersRoutes);
-app.use('/hires', corsWithAllowList, hiresRoutes);
-app.use('/profile', corsWithAllowList, profilesRoutes);
+app.use('/', corsWithAllowList, authorizationTokenHandler, usersRoutes);
+app.use('/hires', corsWithAllowList, authorizationTokenHandler, hiresRoutes);
+app.use('/profile', corsWithAllowList, authorizationTokenHandler, profilesRoutes);
 
 app.use(errorHandler);
 
