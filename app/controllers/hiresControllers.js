@@ -4,14 +4,31 @@ const { getRecruiterById, getCandidateById } = require('../models/User');
 
 const getHireMessages = async (req, res) => {
   const getAllHiresResults = await getAllHires();
-  res.status(200).send(getAllHiresResults.rows);
+
+  const hireList = getAllHiresResults?.rows?.map(value => ({
+    recruiterProfilesId: value?.recruiter_profiles_id,
+    candidateProfilesId: value?.candidate_profiles_id,
+    messageSubject: value?.message_subject,
+    description: value?.description,
+    id: value?.id
+  }));
+  res.status(200).send(hireList);
 };
 
 const getDetailHireMessage = async (req, res) => {
   const { id } = req.params;
   const getDetailHireResult = await getDetailHire(id);
   if (!getDetailHireResult?.rowCount) throw new ErrorResponse('Hire messages not found!', 404);
-  res.status(200).send(getDetailHireResult.rows);
+
+  const detailHireMessage = getDetailHireResult?.rows?.map(value => ({
+    recruiterProfilesId: value?.recruiter_profiles_id,
+    candidateProfilesId: value?.candidate_profiles_id,
+    messageSubject: value?.message_subject,
+    description: value?.description,
+    id: value?.id
+  }));
+
+  res.status(200).send(detailHireMessage);
 };
 
 const addHireMessage = async (req, res) => {
