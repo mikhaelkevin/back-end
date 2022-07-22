@@ -19,28 +19,28 @@ const editCandidateInformation = (requestData) => {
   });
 };
 
-const getUserExperiencesModel = (id) => {
+const editRecruiterInformation = (requestData) => {
   return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM experiences WHERE candidate_profile_id = $1', [id], (error, result) => {
+    db.query(`WITH updateRecruiterInformation AS (
+      UPDATE recruiter_profiles SET company_name=$1, company_field=$2, company_domicile=$3, description=$4, 
+      instagram=$5, linkedin=$6
+      WHERE user_id=$7 RETURNING user_id)
+      UPDATE users SET email=$8, phonenumber=$9, profile_picture=$10, cover_image=$11 
+      WHERE id in (SELECT user_id FROM updateRecruiterInformation)
+      RETURNING email`,
+    [requestData.newCompanyName, requestData.newCompanyField, requestData.newCompanyDomicile, requestData.newDescription, requestData.newInstagram, requestData.newLinkedIn, requestData.userId, requestData.newEmail, requestData.newPhoneNumber, requestData.newProfilePicture, requestData.newCoverImage],
+    (error, result) => {
       if (error) return reject(error);
+      if (!result?.rowCount) return reject(new ErrorResponse('Sorry, something wrong while updating information'));
       resolve(result);
     });
   });
 };
 
-const editRecruiterInformation = (requestData) => {
+const getUserExperiencesModel = (id) => {
   return new Promise((resolve, reject) => {
-    db.query(`WITH updateRecruiterInformation AS (
-            UPDATE recruiter_profiles SET company_name=$1, company_field=$2, company_domicile=$3, description=$4, 
-            instagram=$5, linkedin=$6
-            WHERE user_id=$7 RETURNING user_id)
-            UPDATE users SET email=$8, phonenumber=$9, profile_picture=$10, cover_image=$11 
-            WHERE id in (SELECT user_id FROM updateRecruiterInformation)
-            RETURNING email`,
-    [requestData.newCompanyName, requestData.newCompanyField, requestData.newCompanyDomicile, requestData.newDescription, requestData.newInstagram, requestData.newLinkedIn, requestData.userId, requestData.newEmail, requestData.newPhoneNumber, requestData.newProfilePicture, requestData.newCoverImage],
-    (error, result) => {
+    db.query('SELECT * FROM experiences WHERE candidate_profile_id = $1', [id], (error, result) => {
       if (error) return reject(error);
-      if (!result?.rowCount) return reject(new ErrorResponse('Sorry, something wrong while updating information'));
       resolve(result);
     });
   });
@@ -93,4 +93,73 @@ const deleteUserExperienceModel = (experienceId, profileId) => {
   });
 };
 
-module.exports = { getUserExperiencesModel, getExperienceById, insertUserExperiences, updateUserExperiencesModel, deleteUserExperienceModel, editCandidateInformation, editRecruiterInformation };
+const getPortofolioById = (portofolioId) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM portofolios WHERE id = $1',
+      [portofolioId],
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+  });
+};
+
+const getUserPortofoliosModel = (id) => {
+  return new Promise((resolve, reject) => {
+    db.query('SELECT * FROM portofolios WHERE candidate_profile_id = $1', [id],
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+  });
+};
+
+const addUserPortofolioModel = (requestData) => {
+  return new Promise((resolve, reject) => {
+    db.query('INSERT INTO portofolios(app_name, link, type, app_picture, candidate_profile_id) VALUES($1, $2, $3, $4, $5)',
+      [requestData.appName, requestData.link, requestData.type, requestData.appPicture, requestData.profileId],
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result);
+      });
+  });
+};
+
+const editUserPortofolioModel = (requestData) => {
+  return new Promise((resolve, reject) => {
+    db.query('UPDATE portofolios SET app_name=$1, link=$2, type=$3, app_picture=$4 WHERE id=$5 AND candidate_profile_id=$6',
+      [requestData.newAppName, requestData.newLink, requestData.newType, requestData.newAppPicture, requestData.portofolioId, requestData.profileId],
+      (error, result) => {
+        if (error) return reject(error);
+        if (!result?.rowCount) return reject(new ErrorResponse('Something wrong happened on edit portofolio'));
+        resolve(result);
+      });
+  });
+};
+
+const deleteUserPortofolioModel = (portofolioId, profileId) => {
+  return new Promise((resolve, reject) => {
+    db.query('DELETE FROM portofolios WHERE id=$1 AND candidate_profile_id=$2',
+      [portofolioId, profileId],
+      (error, result) => {
+        if (error) return reject(error);
+        if (!result.rowCount) return reject(new ErrorResponse('Something wrong happened on deleting portofolio'));
+        resolve(result);
+      });
+  });
+};
+
+module.exports = {
+  getUserExperiencesModel,
+  getExperienceById,
+  insertUserExperiences,
+  updateUserExperiencesModel,
+  deleteUserExperienceModel,
+  editCandidateInformation,
+  editRecruiterInformation,
+  getUserPortofoliosModel,
+  getPortofolioById,
+  addUserPortofolioModel,
+  editUserPortofolioModel,
+  deleteUserPortofolioModel
+};
