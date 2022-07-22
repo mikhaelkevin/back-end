@@ -192,14 +192,14 @@ const updateUserExperiences = async (req, res) => {
 const deleteUserExperiences = async (req, res) => {
   const { profileId } = req.params;
   const candidateChecker = await getCandidateById(profileId);
-  if (!candidateChecker?.rowCount) throw new ErrorResponse('CandidateId not found');
+  if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
 
   const { experienceId } = req.params;
   const experienceIdChecker = await getExperienceById(experienceId);
-  if (!experienceIdChecker?.rowCount) throw new ErrorResponse('ExperienceId not found');
+  if (!experienceIdChecker?.rowCount) throw new ErrorResponse('Experience not found');
 
   await deleteUserExperienceModel(experienceId, profileId);
-  res.status(200).send({ message: 'experience has been deleted' });
+  res.status(200).send({ message: 'Experience has been deleted' });
 };
 
 const getUserPortofolios = async (req, res) => {

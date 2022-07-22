@@ -8,7 +8,6 @@ const getHireMessages = async (req, res) => {
 };
 
 const getDetailHireMessage = async (req, res) => {
-  console.log(req.params);
   const { id } = req.params;
   const getDetailHireResult = await getDetailHire(id);
   if (!getDetailHireResult?.rowCount) throw new ErrorResponse('Hire messages not found!', 404);
