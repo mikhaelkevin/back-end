@@ -180,7 +180,7 @@ const deleteUserExperiences = async (req, res) => {
   const experienceIdChecker = await getExperienceById(experienceId);
   if (!experienceIdChecker?.rowCount) throw new ErrorResponse('ExperienceId not found');
 
-  await deleteUserExperienceModel(experienceId);
+  await deleteUserExperienceModel(experienceId, profileId);
   res.status(200).send({ message: 'experience has been deleted' });
 };
 

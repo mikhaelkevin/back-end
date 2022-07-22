@@ -71,7 +71,7 @@ const insertUserExperiences = (requestData) => {
 
 const updateUserExperiencesModel = (requestData) => {
   return new Promise((resolve, reject) => {
-    db.query('UPDATE experiences SET position = $1, company_name = $2, start_date = $3, end_date = $4, description = $5, candidate_profile_id = $6 WHERE id = $7',
+    db.query('UPDATE experiences SET position = $1, company_name = $2, start_date = $3, end_date = $4, description = $5 WHERE  candidate_profile_id = $6 AND id = $7 ',
       [requestData.position, requestData.companyName, requestData.startDate, requestData.endDate, requestData.description, requestData.profileId, requestData.experienceId], (error, result) => {
         if (error) return reject(error);
         if (!result.rowCount) return reject(new ErrorResponse('Something wrong on update experience'));
@@ -81,12 +81,15 @@ const updateUserExperiencesModel = (requestData) => {
   });
 };
 
-const deleteUserExperienceModel = (experienceId) => {
+const deleteUserExperienceModel = (experienceId, profileId) => {
   return new Promise((resolve, reject) => {
-    db.query('DELETE FROM experiences WHERE id = $1', [experienceId], (error, result) => {
-      if (error) return reject(error);
-      resolve(result);
-    });
+    db.query('DELETE FROM experiences WHERE id = $1 AND candidate_profile_id = $2',
+      [experienceId, profileId],
+      (error, result) => {
+        if (error) return reject(error);
+        if (!result.rowCount) return reject(new ErrorResponse('Something wrong on delete experience'));
+        resolve(result);
+      });
   });
 };
 

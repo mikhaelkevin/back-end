@@ -8,9 +8,8 @@ const { multerFields } = require('../app/middlewares/multerHandler');
 
 // ROUTE ENDPOINTS
 profileRoutes.get('/:id/experiences', asyncHandler(getUserExperiences))
-  .post('/:id/experiences', urlencoded, asyncHandler(addUserExperiences));
-
-profileRoutes.patch('/:profileId/experiences/:experienceId', urlencoded, asyncHandler(updateUserExperiences))
+  .post('/:id/experiences', urlencoded, asyncHandler(addUserExperiences))
+  .patch('/:profileId/experiences/:experienceId', urlencoded, asyncHandler(updateUserExperiences))
   .delete('/:profileId/experiences/:experienceId', asyncHandler(deleteUserExperiences));
 
 profileRoutes.get('/:userId', asyncHandler(getProfile))
