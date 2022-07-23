@@ -7,10 +7,10 @@ const editCandidateInformation = (requestData) => {
             UPDATE candidate_profiles SET name=$1, job=$2, domicile=$3, work_place=$4, 
             description=$5, skills=$6, instagram=$7, github=$8
             WHERE user_id=$9 RETURNING user_id)
-            UPDATE users SET profile_picture=$10, cover_image=$11 
+            UPDATE users SET profile_picture=$10, cover_image=$11, cloud_profile_picture_id=$12, cloud_cover_image_id=$13
             WHERE id in (SELECT user_id FROM updateCandidateInformation)
             RETURNING email`,
-    [requestData.newName, requestData.newJob, requestData.newDomicile, requestData.newWorkPlace, requestData.newDescription, requestData.newSkills, requestData.newInstagram, requestData.newGithub, requestData.userId, requestData.newProfilePicture, requestData.newCoverImage],
+    [requestData.newName, requestData.newJob, requestData.newDomicile, requestData.newWorkPlace, requestData.newDescription, requestData.newSkills, requestData.newInstagram, requestData.newGithub, requestData.userId, requestData.newProfilePicture, requestData.newCoverImage, requestData.newProfilePicId, requestData.newCoverImgId],
     (error, result) => {
       if (error) return reject(error);
       if (!result?.rowCount) return reject(new ErrorResponse('Sorry, something wrong while updating information'));
@@ -25,10 +25,10 @@ const editRecruiterInformation = (requestData) => {
       UPDATE recruiter_profiles SET company_name=$1, company_field=$2, company_domicile=$3, description=$4, 
       instagram=$5, linkedin=$6
       WHERE user_id=$7 RETURNING user_id)
-      UPDATE users SET email=$8, phonenumber=$9, profile_picture=$10, cover_image=$11 
+      UPDATE users SET email=$8, phonenumber=$9, profile_picture=$10, cover_image=$11, cloud_profile_picture_id=$12, cloud_cover_image_id=$13
       WHERE id in (SELECT user_id FROM updateRecruiterInformation)
       RETURNING email`,
-    [requestData.newCompanyName, requestData.newCompanyField, requestData.newCompanyDomicile, requestData.newDescription, requestData.newInstagram, requestData.newLinkedIn, requestData.userId, requestData.newEmail, requestData.newPhoneNumber, requestData.newProfilePicture, requestData.newCoverImage],
+    [requestData.newCompanyName, requestData.newCompanyField, requestData.newCompanyDomicile, requestData.newDescription, requestData.newInstagram, requestData.newLinkedIn, requestData.userId, requestData.newEmail, requestData.newPhoneNumber, requestData.newProfilePicture, requestData.newCoverImage, requestData.newProfilePicId, requestData.newCoverImgId],
     (error, result) => {
       if (error) return reject(error);
       if (!result?.rowCount) return reject(new ErrorResponse('Sorry, something wrong while updating information'));
@@ -93,10 +93,10 @@ const deleteUserExperienceModel = (experienceId, profileId) => {
   });
 };
 
-const getPortofolioById = (portofolioId) => {
+const getPortofolioById = (portofolioId, profileId) => {
   return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM portofolios WHERE id = $1',
-      [portofolioId],
+    db.query('SELECT * FROM portofolios WHERE id = $1 AND candidate_profile_id = $2',
+      [portofolioId, profileId],
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -116,8 +116,8 @@ const getUserPortofoliosModel = (id) => {
 
 const addUserPortofolioModel = (requestData) => {
   return new Promise((resolve, reject) => {
-    db.query('INSERT INTO portofolios(app_name, link, type, app_picture, candidate_profile_id) VALUES($1, $2, $3, $4, $5)',
-      [requestData.appName, requestData.link, requestData.type, requestData.appPicture, requestData.profileId],
+    db.query('INSERT INTO portofolios(app_name, link, type, app_picture, candidate_profile_id, cloud_app_picture_id ) VALUES($1, $2, $3, $4, $5, $6)',
+      [requestData.appName, requestData.link, requestData.type, requestData.appPicture, requestData.profileId, requestData.appPictureCloudId],
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -127,8 +127,8 @@ const addUserPortofolioModel = (requestData) => {
 
 const editUserPortofolioModel = (requestData) => {
   return new Promise((resolve, reject) => {
-    db.query('UPDATE portofolios SET app_name=$1, link=$2, type=$3, app_picture=$4 WHERE id=$5 AND candidate_profile_id=$6',
-      [requestData.newAppName, requestData.newLink, requestData.newType, requestData.newAppPicture, requestData.portofolioId, requestData.profileId],
+    db.query('UPDATE portofolios SET app_name=$1, link=$2, type=$3, app_picture=$4, cloud_app_picture_id=$5 WHERE id=$6 AND candidate_profile_id=$7',
+      [requestData.newAppName, requestData.newLink, requestData.newType, requestData.newAppPicture, requestData.newAppPicCloudId, requestData.portofolioId, requestData.profileId],
       (error, result) => {
         if (error) return reject(error);
         if (!result?.rowCount) return reject(new ErrorResponse('Something wrong happened on edit portofolio'));
@@ -143,7 +143,6 @@ const deleteUserPortofolioModel = (portofolioId, profileId) => {
       [portofolioId, profileId],
       (error, result) => {
         if (error) return reject(error);
-        if (!result.rowCount) return reject(new ErrorResponse('Something wrong happened on deleting portofolio'));
         resolve(result);
       });
   });

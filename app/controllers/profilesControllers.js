@@ -1,4 +1,5 @@
 const { ErrorResponse } = require('../../utils/errorResponse');
+const cloudinary = require('../../utils/cloudinary');
 const {
   getUserById,
   getCandidateByUserId,
@@ -30,8 +31,28 @@ const editProfile = async (req, res) => {
   const { userId } = req.params;
   const userCompleteData = await joinProfileAndUser(userId);
 
-  const profilePicture = req?.files?.profilePicture?.[0]?.path;
-  const coverImage = req?.files?.coverImage?.[0]?.path;
+  let profilePicture = req?.files?.profilePicture?.[0]?.path;
+  let cloudProfilePicId = userCompleteData?.cloudProfilePicId;
+  let coverImage = req?.files?.coverImage?.[0]?.path;
+  let cloudCoverImgId = userCompleteData?.cloudCoverImgId;
+
+  if (profilePicture) {
+    if (cloudProfilePicId) {
+      await cloudinary.uploader.destroy(cloudProfilePicId);
+    }
+    const cloudinaryUpload = await cloudinary.uploader.upload(profilePicture);
+    profilePicture = cloudinaryUpload.secure_url;
+    cloudProfilePicId = cloudinaryUpload.public_id;
+  }
+
+  if (coverImage) {
+    if (cloudCoverImgId) {
+      await cloudinary.uploader.destroy(cloudCoverImgId);
+    }
+    const cloudinaryUpload = await cloudinary.uploader.upload(coverImage);
+    coverImage = cloudinaryUpload.secure_url;
+    cloudCoverImgId = cloudinaryUpload.public_id;
+  }
 
   const isRecruiter = userCompleteData?.roleId === 1;
   const isCandidate = userCompleteData?.roleId === 2;
@@ -45,10 +66,12 @@ const editProfile = async (req, res) => {
     const newDescription = description || userCompleteData?.description;
     const newEmail = email || userCompleteData?.email;
     const newPhoneNumber = phoneNumber || userCompleteData?.phoneNumber;
-    const newProfilePicture = profilePicture || userCompleteData?.profilePicture;
-    const newCoverImage = coverImage || userCompleteData?.coverImage;
     const newInstagram = instagram || userCompleteData?.instagram;
     const newLinkedIn = linkedin || userCompleteData?.linkedin;
+    const newProfilePicture = profilePicture || userCompleteData?.profilePicture;
+    const newProfilePicId = cloudProfilePicId || userCompleteData?.cloudProfilePicId;
+    const newCoverImage = coverImage || userCompleteData?.coverImage;
+    const newCoverImgId = cloudCoverImgId || userCompleteData?.cloudCoverImgId;
 
     const requestData = {
       newCompanyName,
@@ -58,7 +81,9 @@ const editProfile = async (req, res) => {
       newEmail,
       newPhoneNumber,
       newProfilePicture,
+      newProfilePicId,
       newCoverImage,
+      newCoverImgId,
       newInstagram,
       newLinkedIn,
       userId
@@ -79,7 +104,9 @@ const editProfile = async (req, res) => {
     const newInstagram = instagram || userCompleteData?.instagram;
     const newGithub = github || userCompleteData?.github;
     const newProfilePicture = profilePicture || userCompleteData?.profilePicture;
+    const newProfilePicId = cloudProfilePicId || userCompleteData?.cloudProfilePicId;
     const newCoverImage = coverImage || userCompleteData?.coverImage;
+    const newCoverImgId = cloudCoverImgId || userCompleteData?.cloudCoverImgId;
 
     const requestData = {
       newName,
@@ -91,7 +118,9 @@ const editProfile = async (req, res) => {
       newInstagram,
       newGithub,
       newProfilePicture,
+      newProfilePicId,
       newCoverImage,
+      newCoverImgId,
       userId
     };
 
@@ -125,7 +154,10 @@ const joinProfileAndUser = async (userId) => {
       phoneNumber: tempUserData.phonenumber,
       roleId: tempUserData.role_id,
       profilePicture: tempUserData.profile_picture,
-      coverImage: tempUserData.cover_image
+      cloudProfilePicId: tempUserData.cloud_profile_picture_id,
+      coverImage: tempUserData.cover_image,
+      cloudCoverImgId: tempUserData.cloud_cover_image_id
+
     };
 
     return recruiterDataManipulation;
@@ -149,7 +181,9 @@ const joinProfileAndUser = async (userId) => {
       email: tempUserData.email,
       roleId: tempUserData.role_id,
       profilePicture: tempUserData.profile_picture,
-      coverImage: tempUserData.cover_image
+      cloudProfilePicId: tempUserData.cloud_profile_picture_id,
+      coverImage: tempUserData.cover_image,
+      cloudCoverImgId: tempUserData.cloud_cover_image_id
     };
 
     return candidateDataManipulation;
@@ -246,6 +280,7 @@ const getUserPortofolios = async (req, res) => {
     link: value?.link,
     type: value?.type,
     appPicture: value?.app_picture,
+    appPicId: value?.cloud_app_picture_id,
     candidateProfileId: value?.candidate_profile_id
   }));
   res.status(200).send(userPortofolios);
@@ -257,11 +292,18 @@ const addUserPortofolio = async (req, res) => {
   if (!candidateChecker.rowCount) throw new ErrorResponse('Candidate not found!', 404);
 
   const { appName, link, type } = req.body;
-  const appPicture = req.file?.path;
+  let appPicture = req.file?.path;
+  let appPictureCloudId;
 
   if (!appName) throw new ErrorResponse('App name is required!');
 
-  await addUserPortofolioModel({ profileId, appName, link, type, appPicture });
+  if (appPicture) {
+    const cloudinaryUpload = await cloudinary.uploader.upload(appPicture);
+    appPicture = cloudinaryUpload.secure_url;
+    appPictureCloudId = cloudinaryUpload.public_id;
+  }
+
+  await addUserPortofolioModel({ profileId, appName, link, type, appPicture, appPictureCloudId });
   res.status(200).send({ message: 'Portofolio successfuly added!' });
 };
 
@@ -271,18 +313,30 @@ const editUserPortofolio = async (req, res) => {
   if (!candidateChecker.rowCount) throw new ErrorResponse('Candidate not found!', 404);
 
   const { appName, link, type } = req.body;
-  const appPicture = req?.file?.path;
+  let appPicture = req.file?.path;
 
-  const portofolioData = await getPortofolioById(portofolioId);
-  if (!portofolioData?.rowCount) throw new ErrorResponse('Portofolio not found!', 404);
+  const portofolioData = await getPortofolioById(portofolioId, profileId);
+  if (!portofolioData?.rowCount) throw new ErrorResponse('User portofolio not found!', 404);
+
   const tempPortofolioData = portofolioData?.rows?.[0];
+  let appPictureCloudId = tempPortofolioData?.cloud_app_picture_id;
+
+  if (appPicture) {
+    if (appPictureCloudId) {
+      await cloudinary.uploader.destroy(appPictureCloudId);
+    }
+    const cloudinaryUpload = await cloudinary.uploader.upload(appPicture);
+    appPicture = cloudinaryUpload.secure_url;
+    appPictureCloudId = cloudinaryUpload.public_id;
+  }
 
   const newAppName = appName || tempPortofolioData?.app_name;
   const newLink = link || tempPortofolioData?.link;
   const newType = type || tempPortofolioData?.type;
   const newAppPicture = appPicture || tempPortofolioData?.app_picture;
+  const newAppPicCloudId = appPictureCloudId || tempPortofolioData?.cloud_app_picture_id;
 
-  await editUserPortofolioModel({ profileId, portofolioId, newAppName, newLink, newType, newAppPicture });
+  await editUserPortofolioModel({ profileId, portofolioId, newAppName, newLink, newType, newAppPicture, newAppPicCloudId });
 
   res.status(200).send({ message: 'Edit portofolio succesful!' });
 };
@@ -292,10 +346,12 @@ const deleteUserPortofolio = async (req, res) => {
   const candidateChecker = await getCandidateById(profileId);
   if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
 
-  const portofolioIdChecker = await getPortofolioById(portofolioId);
-  if (!portofolioIdChecker?.rowCount) throw new ErrorResponse('Portofolio not found');
+  const portofolioIdChecker = await getPortofolioById(portofolioId, profileId);
+  if (!portofolioIdChecker?.rowCount) throw new ErrorResponse('User portofolio not found!', 404);
 
+  await cloudinary.uploader.destroy(portofolioIdChecker.rows?.[0]?.cloud_app_picture_id);
   await deleteUserPortofolioModel(portofolioId, profileId);
+
   res.status(200).send({ message: 'Portofolio has been deleted' });
 };
 
