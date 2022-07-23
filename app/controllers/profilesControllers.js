@@ -1,4 +1,5 @@
 const { ErrorResponse } = require('../../utils/errorResponse');
+const cloudinary = require('../../utils/cloudinary');
 const {
   getUserById,
   getCandidateByUserId,
@@ -240,12 +241,14 @@ const getUserPortofolios = async (req, res) => {
   if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
 
   const getAllUserPortofolios = await getUserPortofoliosModel(id);
+  console.log('getAllUserPortofolios', getAllUserPortofolios.rows);
   const userPortofolios = getAllUserPortofolios?.rows?.map(value => ({
     id: value?.id,
     appName: value?.app_name,
     link: value?.link,
     type: value?.type,
     appPicture: value?.app_picture,
+    appPicId: value?.cloud_app_picture_id,
     candidateProfileId: value?.candidate_profile_id
   }));
   res.status(200).send(userPortofolios);
@@ -257,11 +260,18 @@ const addUserPortofolio = async (req, res) => {
   if (!candidateChecker.rowCount) throw new ErrorResponse('Candidate not found!', 404);
 
   const { appName, link, type } = req.body;
-  const appPicture = req.file?.path;
+  let appPicture = req.file?.path;
+  let appPictureCloudId;
 
   if (!appName) throw new ErrorResponse('App name is required!');
 
-  await addUserPortofolioModel({ profileId, appName, link, type, appPicture });
+  if (appPicture) {
+    const cloudinaryUpload = await cloudinary.uploader.upload(appPicture);
+    appPicture = cloudinaryUpload.secure_url;
+    appPictureCloudId = cloudinaryUpload.public_id;
+  }
+
+  await addUserPortofolioModel({ profileId, appName, link, type, appPicture, appPictureCloudId });
   res.status(200).send({ message: 'Portofolio successfuly added!' });
 };
 
@@ -271,18 +281,28 @@ const editUserPortofolio = async (req, res) => {
   if (!candidateChecker.rowCount) throw new ErrorResponse('Candidate not found!', 404);
 
   const { appName, link, type } = req.body;
-  const appPicture = req?.file?.path;
+  let appPicture = req.file?.path;
+  let appPictureCloudId;
 
-  const portofolioData = await getPortofolioById(portofolioId);
-  if (!portofolioData?.rowCount) throw new ErrorResponse('Portofolio not found!', 404);
+  const portofolioData = await getPortofolioById(portofolioId, profileId);
+  if (!portofolioData?.rowCount) throw new ErrorResponse('User portofolio not found!', 404);
+
   const tempPortofolioData = portofolioData?.rows?.[0];
+
+  if (appPicture) {
+    await cloudinary.uploader.destroy(tempPortofolioData?.cloud_app_picture_id);
+    const cloudinaryUpload = await cloudinary.uploader.upload(appPicture);
+    appPicture = cloudinaryUpload.secure_url;
+    appPictureCloudId = cloudinaryUpload.public_id;
+  }
 
   const newAppName = appName || tempPortofolioData?.app_name;
   const newLink = link || tempPortofolioData?.link;
   const newType = type || tempPortofolioData?.type;
   const newAppPicture = appPicture || tempPortofolioData?.app_picture;
+  const newAppPicCloudId = appPictureCloudId || tempPortofolioData?.cloud_app_picture_id;
 
-  await editUserPortofolioModel({ profileId, portofolioId, newAppName, newLink, newType, newAppPicture });
+  await editUserPortofolioModel({ profileId, portofolioId, newAppName, newLink, newType, newAppPicture, newAppPicCloudId });
 
   res.status(200).send({ message: 'Edit portofolio succesful!' });
 };
@@ -292,10 +312,12 @@ const deleteUserPortofolio = async (req, res) => {
   const candidateChecker = await getCandidateById(profileId);
   if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
 
-  const portofolioIdChecker = await getPortofolioById(portofolioId);
-  if (!portofolioIdChecker?.rowCount) throw new ErrorResponse('Portofolio not found');
+  const portofolioIdChecker = await getPortofolioById(portofolioId, profileId);
+  if (!portofolioIdChecker?.rowCount) throw new ErrorResponse('User portofolio not found!', 404);
 
+  await cloudinary.uploader.destroy(portofolioIdChecker.rows?.[0]?.cloud_app_picture_id);
   await deleteUserPortofolioModel(portofolioId, profileId);
+
   res.status(200).send({ message: 'Portofolio has been deleted' });
 };
 

@@ -2,15 +2,15 @@ const multer = require('multer');
 const { ErrorResponse } = require('../../utils/errorResponse');
 
 const storage = multer.diskStorage({
-  destination: (req, file, callback) => {
-    const imageAllowed = file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg';
-    const isProfilePicture = imageAllowed && file.fieldname === 'profilePicture';
-    const isCoverImage = imageAllowed && file.fieldname === 'coverImage';
-    const isAppPicture = imageAllowed && file.fieldname === 'appPicture';
-    if (isProfilePicture) return callback(null, './public/profilePicture');
-    if (isCoverImage) return callback(null, './public/coverImage');
-    if (isAppPicture) return callback(null, './public/appPicture');
-  },
+  // destination: (req, file, callback) => {
+  //   const imageAllowed = file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg';
+  //   const isProfilePicture = imageAllowed && file.fieldname === 'profilePicture';
+  //   const isCoverImage = imageAllowed && file.fieldname === 'coverImage';
+  //   const isAppPicture = imageAllowed && file.fieldname === 'appPicture';
+  //   if (isProfilePicture) return callback(null, './public/profilePicture');
+  //   if (isCoverImage) return callback(null, './public/coverImage');
+  //   if (isAppPicture) return callback(null, './public/appPicture');
+  // },
   filename: (req, file, callback) => {
     let fileName;
     if (file.fieldname === 'profilePicture') fileName = `Profile-${Date.now()}-${file.originalname}`;

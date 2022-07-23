@@ -93,10 +93,10 @@ const deleteUserExperienceModel = (experienceId, profileId) => {
   });
 };
 
-const getPortofolioById = (portofolioId) => {
+const getPortofolioById = (portofolioId, profileId) => {
   return new Promise((resolve, reject) => {
-    db.query('SELECT * FROM portofolios WHERE id = $1',
-      [portofolioId],
+    db.query('SELECT * FROM portofolios WHERE id = $1 AND candidate_profile_id = $2',
+      [portofolioId, profileId],
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -116,8 +116,8 @@ const getUserPortofoliosModel = (id) => {
 
 const addUserPortofolioModel = (requestData) => {
   return new Promise((resolve, reject) => {
-    db.query('INSERT INTO portofolios(app_name, link, type, app_picture, candidate_profile_id) VALUES($1, $2, $3, $4, $5)',
-      [requestData.appName, requestData.link, requestData.type, requestData.appPicture, requestData.profileId],
+    db.query('INSERT INTO portofolios(app_name, link, type, app_picture, candidate_profile_id, cloud_app_picture_id ) VALUES($1, $2, $3, $4, $5, $6)',
+      [requestData.appName, requestData.link, requestData.type, requestData.appPicture, requestData.profileId, requestData.appPictureCloudId],
       (error, result) => {
         if (error) return reject(error);
         resolve(result);
@@ -127,8 +127,8 @@ const addUserPortofolioModel = (requestData) => {
 
 const editUserPortofolioModel = (requestData) => {
   return new Promise((resolve, reject) => {
-    db.query('UPDATE portofolios SET app_name=$1, link=$2, type=$3, app_picture=$4 WHERE id=$5 AND candidate_profile_id=$6',
-      [requestData.newAppName, requestData.newLink, requestData.newType, requestData.newAppPicture, requestData.portofolioId, requestData.profileId],
+    db.query('UPDATE portofolios SET app_name=$1, link=$2, type=$3, app_picture=$4, cloud_app_picture_id=$5 WHERE id=$6 AND candidate_profile_id=$7',
+      [requestData.newAppName, requestData.newLink, requestData.newType, requestData.newAppPicture, requestData.newAppPicCloudId, requestData.portofolioId, requestData.profileId],
       (error, result) => {
         if (error) return reject(error);
         if (!result?.rowCount) return reject(new ErrorResponse('Something wrong happened on edit portofolio'));
@@ -143,7 +143,6 @@ const deleteUserPortofolioModel = (portofolioId, profileId) => {
       [portofolioId, profileId],
       (error, result) => {
         if (error) return reject(error);
-        if (!result.rowCount) return reject(new ErrorResponse('Something wrong happened on deleting portofolio'));
         resolve(result);
       });
   });
