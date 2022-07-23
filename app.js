@@ -19,7 +19,6 @@ app.use(bodyParser.json());
 // ROUTES DECLARATION
 const usersRoutes = require('./routes/usersRoutes');
 const testimonialsRoutes = require('./routes/testimonialsRoutes');
-const hiresRoutes = require('./routes/hiresRoutes');
 const authRoutes = require('./routes/authRoutes');
 const profilesRoutes = require('./routes/profilesRoutes');
 
@@ -29,7 +28,6 @@ app.use('/testimonials', corsWithAllowList, testimonialsRoutes);
 
 // PRIVATE ROUTES JWT REQUIRED
 app.use('/', corsWithAllowList, authorizationTokenHandler, usersRoutes);
-app.use('/hires', corsWithAllowList, authorizationTokenHandler, hiresRoutes);
 app.use('/profile', corsWithAllowList, authorizationTokenHandler, profilesRoutes);
 
 app.use(errorHandler);
