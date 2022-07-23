@@ -274,7 +274,6 @@ const getUserPortofolios = async (req, res) => {
   if (!candidateChecker?.rowCount) throw new ErrorResponse('Candidate not found');
 
   const getAllUserPortofolios = await getUserPortofoliosModel(id);
-  console.log('getAllUserPortofolios', getAllUserPortofolios.rows);
   const userPortofolios = getAllUserPortofolios?.rows?.map(value => ({
     id: value?.id,
     appName: value?.app_name,
@@ -315,15 +314,17 @@ const editUserPortofolio = async (req, res) => {
 
   const { appName, link, type } = req.body;
   let appPicture = req.file?.path;
-  let appPictureCloudId;
 
   const portofolioData = await getPortofolioById(portofolioId, profileId);
   if (!portofolioData?.rowCount) throw new ErrorResponse('User portofolio not found!', 404);
 
   const tempPortofolioData = portofolioData?.rows?.[0];
+  let appPictureCloudId = tempPortofolioData?.cloud_app_picture_id;
 
   if (appPicture) {
-    await cloudinary.uploader.destroy(tempPortofolioData?.cloud_app_picture_id);
+    if (appPictureCloudId) {
+      await cloudinary.uploader.destroy(appPictureCloudId);
+    }
     const cloudinaryUpload = await cloudinary.uploader.upload(appPicture);
     appPicture = cloudinaryUpload.secure_url;
     appPictureCloudId = cloudinaryUpload.public_id;
