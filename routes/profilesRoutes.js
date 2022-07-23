@@ -15,6 +15,7 @@ const {
   editUserPortofolio,
   deleteUserPortofolio
 } = require('../app/controllers/profilesControllers');
+const { getHireMessages, getDetailHireMessage, addHireMessage } = require('../app/controllers/hiresControllers');
 const { multerFields, multerSingle } = require('../app/middlewares/multerHandler');
 
 // ROUTE ENDPOINTS
@@ -30,5 +31,9 @@ profileRoutes.get('/:id/portofolios', asyncHandler(getUserPortofolios))
 
 profileRoutes.get('/:userId', asyncHandler(getProfile))
   .patch('/:userId', multerFields, asyncHandler(editProfile));
+
+profileRoutes.get('/:profileId/hires', asyncHandler(getHireMessages))
+  .get('/:profileId/hires/:hireId', asyncHandler(getDetailHireMessage))
+  .post('/:profileId/hires', urlencoded, asyncHandler(addHireMessage));
 
 module.exports = profileRoutes;
