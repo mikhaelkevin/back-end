@@ -90,7 +90,7 @@ const editProfile = async (req, res) => {
     };
 
     await editRecruiterInformation(requestData);
-    return res.status(200).send({ message: 'Edit profile success!' });
+    return res.status(200).send({ message: 'Edit recruiter profile success!' });
   } else if (isCandidate) {
     const { name, job, domicile, workPlace, description, skills, instagram, github } = req.body;
     const stringifySkills = JSON.stringify(skills?.split(',')?.map(value => value.trim()));
@@ -126,7 +126,7 @@ const editProfile = async (req, res) => {
 
     await editCandidateInformation(requestData);
 
-    return res.status(200).send({ message: 'Edit profile success!' });
+    return res.status(200).send({ message: 'Edit candidate profile success!' });
   } else {
     throw new ErrorResponse('Invalid users role!');
   }
