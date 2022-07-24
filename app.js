@@ -7,13 +7,14 @@ require('dotenv').config();
 
 // CONFIG
 const app = express();
-const port = 8000;
+const port = process.env.PORT || process.env.LOCAL_PORT;
 
 // MIDDLEWARES
 const { errorHandler } = require('./app/middlewares/errorHandler');
 const corsWithAllowList = require('./configs/cors');
 const { authorizationTokenHandler } = require('./app/middlewares/tokenHandler');
-app.use(helmet());
+
+app.use(helmet({ crossOriginResourcePolicy: false }));
 app.use(bodyParser.json());
 
 // ROUTES DECLARATION
