@@ -232,6 +232,7 @@ const updateUserExperiences = async (req, res) => {
   if (!experienceIdChecker?.rowCount) throw new ErrorResponse('Experience not found');
 
   const { position, companyName, startDate, endDate, description } = req.body;
+  if ((startDate && endDate) && (startDate > endDate)) throw new ErrorResponse('Start date must be less than end date');
   const getExperience = await getExperienceById(experienceId);
 
   if (getExperience?.rowCount > 0) {
