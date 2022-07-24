@@ -1,6 +1,6 @@
 const cors = require('cors');
 
-const allowlist = ['*'];
+const allowlist = ['https://joshy-app.herokuapp.com'];
 const corsOptionsDelegate = function (req, callback) {
   let corsOptions;
   if (allowlist.indexOf(req.header('Origin')) !== -1) {
