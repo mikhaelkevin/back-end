@@ -4,7 +4,8 @@ const errorHandler = (error, req, res, next) => {
   const errorList = {
     duplicateEmail: error?.code === '23505' && error?.constraint === 'users_email_key',
     duplicatePhonenumber: error?.code === '23505' && error?.constraint === 'users_phonenumber_key',
-    duplicateCompanyName: error?.code === '23505' && error?.constraint === 'recruiter_profile_company_name_key',
+    duplicateCompanyNameLocal: error?.code === '23505' && error?.constraint === 'recruiter_profile_company_name_key',
+    duplicateCompanyNameDeploy: error?.code === '23505' && error?.constraint === 'recruiter_profiles_company_name_key',
     overLimitInput: error?.code === '22001'
     // unexpectedDataType: error?.code === '22P02'
   };
@@ -17,7 +18,7 @@ const errorHandler = (error, req, res, next) => {
     error.message = 'Phonenumber has been used';
   }
 
-  if (errorList.duplicateCompanyName) {
+  if (errorList.duplicateCompanyNameLocal || errorList.duplicateCompanyNameDeploy) {
     error.message = 'Company name has been used';
   }
 
