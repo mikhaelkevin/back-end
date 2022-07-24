@@ -366,5 +366,6 @@ module.exports = {
   getUserPortofolios,
   addUserPortofolio,
   editUserPortofolio,
-  deleteUserPortofolio
+  deleteUserPortofolio,
+  joinProfileAndUser
 };

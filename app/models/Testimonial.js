@@ -18,7 +18,6 @@ const getAllTestimonials = () => {
     db.query('SELECT * FROM testimonials',
       (error, result) => {
         if (error) return reject(error);
-        // if (!result.rowCount) return reject(new ErrorResponse('There is no testimonials!', 404));
         resolve(result);
       });
   });
