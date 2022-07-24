@@ -23,6 +23,7 @@ const storage = multer.diskStorage({
 const uploadFile = multer({
   storage,
   fileFilter: async (req, file, callback) => {
+    console.log('file', file);
     const uploadRules = {
       imageFormat: file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg',
       pictureField: file.fieldname === 'profilePicture' || file.fieldname === 'coverImage' || file.fieldname === 'appPicture'
