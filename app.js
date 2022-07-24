@@ -31,6 +31,10 @@ app.use('/testimonials', corsWithAllowList, testimonialsRoutes);
 app.use('/', corsWithAllowList, authorizationTokenHandler, usersRoutes);
 app.use('/profile', corsWithAllowList, authorizationTokenHandler, profilesRoutes);
 
+app.use('*', (req, res) => {
+  res.status(200).send('Connected');
+});
+
 app.use(errorHandler);
 
 // APP RUN
