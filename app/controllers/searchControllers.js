@@ -73,7 +73,7 @@ const getCandidates = async (req, res) => {
     const temp = await joinProfileAndUser(data.id);
     data.name = temp?.name;
     data.job = temp?.job || 'Unknown';
-    data.domicile = temp?.job || 'Unknown';
+    data.domicile = temp?.domicile || 'Unknown';
     data.skills = temp?.skills;
     data.profilePicture = temp?.profilePicture;
   }));
