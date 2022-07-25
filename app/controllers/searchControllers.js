@@ -1,5 +1,6 @@
 const { ErrorResponse } = require('../../utils/errorResponse');
 const { getCandidateByDomicile, getCandidateBySkills, getCandidateByName, getAllCandidates } = require('../models/Search');
+const { joinProfileAndUser } = require('../controllers/profilesControllers');
 
 const getCandidates = async (req, res) => {
   // Sort by type : name/skill/domicile
@@ -66,17 +67,15 @@ const getCandidates = async (req, res) => {
 
   const getAllCandidateResults = await getAllCandidates();
 
-  const candidateData = getAllCandidateResults?.rows?.map(value => ({
-    id: value?.id,
-    name: value?.name,
-    job: value?.job,
-    domicile: value?.domicile,
-    workPlace: value?.work_place,
-    description: value?.description,
-    skills: value?.skills,
-    instagram: value?.instagram,
-    github: value?.github,
-    userId: value?.user_id
+  const candidateData = getAllCandidateResults?.rows?.map(value => ({ id: value?.id }));
+
+  await Promise.all(candidateData.map(async data => {
+    const temp = await joinProfileAndUser(data.id);
+    data.name = temp?.name;
+    data.job = temp?.job || 'Unknown';
+    data.domicile = temp?.job || 'Unknown';
+    data.skills = temp?.skills;
+    data.profilePicture = temp?.profilePicture;
   }));
 
   res.status(200).send(candidateData);
