@@ -122,7 +122,7 @@ psql -U postgres -p 5432 -h localhost -d db_binary.psql -f db_binary.psql.psql
 
 <i>Note: you can use your own way to import the database</i>
 
-- Import our [API Documentation](https://documenter.getpostman.com/view/13579110/VUxLwoTN) on Postman
+- Import our [API Documentation](https://documenter.getpostman.com/view/13579110/VUxLwoTN) on Postman (change the base url if you want use it on local)
 - After all the step is done you ready to go
 - Open the backend folder with your IDE
 - Open the IDE teriminal and run below command
@@ -148,8 +148,10 @@ DB_PORT=example
 
 PRIVATE_KEY=example
 
-
-note: maybe some features wont run in local, if you want to run full features you can go back to our postman documentation.
+NOTE:
+maybe some features wont run in local.
+if you want to run full features you can use our web services url as the base url.
+the reason we say this is because our local env file have a credential data that we can't share.
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -189,6 +191,7 @@ Contributions are what make the open source community such an amazing place to b
     <tr>
     <th>Backend</th>
     <th>Frontend</th>
+    <th>Web Services</th>
     <th>API </th>
     </tr>
     <tr>
@@ -200,6 +203,11 @@ Contributions are what make the open source community such an amazing place to b
     <td> 
     <a href="https://github.com/aldoBangun/joshy-app/tree/main"> 
     <img src="https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white" alt="fe-github">
+    <a/>
+    </td>
+    <td> 
+    <a href="#"> 
+    <img src="https://img.shields.io/badge/heroku-%23430098.svg?style=for-the-badge&logo=heroku&logoColor=white" alt="web-services">
     <a/>
     </td>
     <td> 
