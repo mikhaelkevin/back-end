@@ -1,6 +1,6 @@
 const cors = require('cors');
 
-const allowlist = ['https://joshy-app.herokuapp.com', 'http://localhost:3001', 'http://localhost:3000'];
+const allowlist = ['https://joshy-app.web.app/', 'http://localhost:3001', 'http://localhost:3000'];
 const corsOptionsDelegate = function (req, callback) {
   let corsOptions;
   if (allowlist.indexOf(req.header('Origin')) !== -1) {
