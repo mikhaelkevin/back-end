@@ -255,7 +255,7 @@ Contributions are what make the open source community such an amazing place to b
       <td align="center">
         <a href="https://github.com/rahimatunnimah">
           <img width="100" src="https://avatars.githubusercontent.com/u/59507749?v=4" alt="nimah"><br/>
-          <sub><b>Rahimatun Ni'mah</b></sub> <br/>Rahimatun Ni'mah
+          <sub><b>Rahimatun Ni'mah</b></sub><br/>
           <sub>Backend Dev</sub>
         </a>
       </td>
