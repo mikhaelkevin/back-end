@@ -1,0 +1,655 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 14.3
+-- Dumped by pg_dump version 14.3
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: type_portofolio; Type: TYPE; Schema: public; Owner: postgres
+--
+
+CREATE TYPE public.type_portofolio AS ENUM (
+    'mobile',
+    'web'
+);
+
+
+ALTER TYPE public.type_portofolio OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: candidate_profiles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.candidate_profiles (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    job character varying(50),
+    domicile character varying(50),
+    work_place character varying(50),
+    description text,
+    skills text,
+    instagram character varying(100),
+    github character varying(100),
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.candidate_profiles OWNER TO postgres;
+
+--
+-- Name: candidate_profiles_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.candidate_profiles_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.candidate_profiles_id_seq OWNER TO postgres;
+
+--
+-- Name: experiences; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.experiences (
+    id integer NOT NULL,
+    "position" character varying(50),
+    company_name character varying(150),
+    start_date date,
+    end_date date,
+    description text,
+    candidate_profile_id integer NOT NULL
+);
+
+
+ALTER TABLE public.experiences OWNER TO postgres;
+
+--
+-- Name: experiences_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.experiences_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.experiences_id_seq OWNER TO postgres;
+
+--
+-- Name: experiences_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.experiences_id_seq OWNED BY public.experiences.id;
+
+
+--
+-- Name: hire_messages; Type: TABLE; Schema: public; Owner: nocturndev
+--
+
+CREATE TABLE public.hire_messages (
+    recruiter_profiles_id integer NOT NULL,
+    candidate_profiles_id integer NOT NULL,
+    message_subject character varying(100),
+    description text,
+    id integer NOT NULL
+);
+
+
+ALTER TABLE public.hire_messages OWNER TO nocturndev;
+
+--
+-- Name: hire_messages_id_seq; Type: SEQUENCE; Schema: public; Owner: nocturndev
+--
+
+CREATE SEQUENCE public.hire_messages_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.hire_messages_id_seq OWNER TO nocturndev;
+
+--
+-- Name: hire_messages_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nocturndev
+--
+
+ALTER SEQUENCE public.hire_messages_id_seq OWNED BY public.hire_messages.id;
+
+
+--
+-- Name: portofolios; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.portofolios (
+    id integer NOT NULL,
+    app_name character varying,
+    link character varying,
+    type public.type_portofolio,
+    app_picture character varying,
+    candidate_profile_id integer NOT NULL,
+    cloud_app_picture_id text
+);
+
+
+ALTER TABLE public.portofolios OWNER TO postgres;
+
+--
+-- Name: portofolios_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.portofolios_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.portofolios_id_seq OWNER TO postgres;
+
+--
+-- Name: portofolios_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.portofolios_id_seq OWNED BY public.portofolios.id;
+
+
+--
+-- Name: recruiter_profile_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.recruiter_profile_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.recruiter_profile_id_seq OWNER TO postgres;
+
+--
+-- Name: recruiter_profiles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.recruiter_profiles (
+    id integer NOT NULL,
+    company_name character varying(150) NOT NULL,
+    company_field character varying(50) NOT NULL,
+    company_domicile character varying(50),
+    description text,
+    instagram character varying(100),
+    linkedin character varying(100),
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.recruiter_profiles OWNER TO postgres;
+
+--
+-- Name: roles; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.roles (
+    id integer NOT NULL,
+    role_name character varying(45) NOT NULL
+);
+
+
+ALTER TABLE public.roles OWNER TO postgres;
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.roles_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.roles_id_seq OWNER TO postgres;
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.roles_id_seq OWNED BY public.roles.id;
+
+
+--
+-- Name: testimonials; Type: TABLE; Schema: public; Owner: nocturndev
+--
+
+CREATE TABLE public.testimonials (
+    id integer NOT NULL,
+    testimonial_message text,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE public.testimonials OWNER TO nocturndev;
+
+--
+-- Name: testimonials_id_seq; Type: SEQUENCE; Schema: public; Owner: nocturndev
+--
+
+CREATE SEQUENCE public.testimonials_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.testimonials_id_seq OWNER TO nocturndev;
+
+--
+-- Name: testimonials_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: nocturndev
+--
+
+ALTER SEQUENCE public.testimonials_id_seq OWNED BY public.testimonials.id;
+
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.users (
+    id integer NOT NULL,
+    email character varying(100) NOT NULL,
+    password character varying(100) NOT NULL,
+    role_id integer NOT NULL,
+    profile_picture character varying,
+    cover_image character varying,
+    phonenumber character varying(13),
+    cloud_profile_picture_id text,
+    cloud_cover_image_id text
+);
+
+
+ALTER TABLE public.users OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.users_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.users_id_seq OWNER TO postgres;
+
+--
+-- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
+
+
+--
+-- Name: experiences id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.experiences ALTER COLUMN id SET DEFAULT nextval('public.experiences_id_seq'::regclass);
+
+
+--
+-- Name: hire_messages id; Type: DEFAULT; Schema: public; Owner: nocturndev
+--
+
+ALTER TABLE ONLY public.hire_messages ALTER COLUMN id SET DEFAULT nextval('public.hire_messages_id_seq'::regclass);
+
+
+--
+-- Name: portofolios id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.portofolios ALTER COLUMN id SET DEFAULT nextval('public.portofolios_id_seq'::regclass);
+
+
+--
+-- Name: roles id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles ALTER COLUMN id SET DEFAULT nextval('public.roles_id_seq'::regclass);
+
+
+--
+-- Name: testimonials id; Type: DEFAULT; Schema: public; Owner: nocturndev
+--
+
+ALTER TABLE ONLY public.testimonials ALTER COLUMN id SET DEFAULT nextval('public.testimonials_id_seq'::regclass);
+
+
+--
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Data for Name: candidate_profiles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.candidate_profiles (id, name, job, domicile, work_place, description, skills, instagram, github, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: experiences; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.experiences (id, "position", company_name, start_date, end_date, description, candidate_profile_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: hire_messages; Type: TABLE DATA; Schema: public; Owner: nocturndev
+--
+
+COPY public.hire_messages (recruiter_profiles_id, candidate_profiles_id, message_subject, description, id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: portofolios; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.portofolios (id, app_name, link, type, app_picture, candidate_profile_id, cloud_app_picture_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: recruiter_profiles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.recruiter_profiles (id, company_name, company_field, company_domicile, description, instagram, linkedin, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: roles; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.roles (id, role_name) FROM stdin;
+1	recruiters
+2	candidate
+\.
+
+
+--
+-- Data for Name: testimonials; Type: TABLE DATA; Schema: public; Owner: nocturndev
+--
+
+COPY public.testimonials (id, testimonial_message, user_id) FROM stdin;
+\.
+
+
+--
+-- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.users (id, email, password, role_id, profile_picture, cover_image, phonenumber, cloud_profile_picture_id, cloud_cover_image_id) FROM stdin;
+\.
+
+
+--
+-- Name: candidate_profiles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.candidate_profiles_id_seq', 1, false);
+
+
+--
+-- Name: experiences_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.experiences_id_seq', 1, false);
+
+
+--
+-- Name: hire_messages_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nocturndev
+--
+
+SELECT pg_catalog.setval('public.hire_messages_id_seq', 1, false);
+
+
+--
+-- Name: portofolios_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.portofolios_id_seq', 1, false);
+
+
+--
+-- Name: recruiter_profile_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.recruiter_profile_id_seq', 1, false);
+
+
+--
+-- Name: roles_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.roles_id_seq', 2, true);
+
+
+--
+-- Name: testimonials_id_seq; Type: SEQUENCE SET; Schema: public; Owner: nocturndev
+--
+
+SELECT pg_catalog.setval('public.testimonials_id_seq', 1, false);
+
+
+--
+-- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.users_id_seq', 1, false);
+
+
+--
+-- Name: candidate_profiles candidate_profiles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.candidate_profiles
+    ADD CONSTRAINT candidate_profiles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: experiences experiences_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.experiences
+    ADD CONSTRAINT experiences_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: hire_messages hire_messages_pkey; Type: CONSTRAINT; Schema: public; Owner: nocturndev
+--
+
+ALTER TABLE ONLY public.hire_messages
+    ADD CONSTRAINT hire_messages_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: portofolios portofolios_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.portofolios
+    ADD CONSTRAINT portofolios_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: recruiter_profiles recruiter_profile_company_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.recruiter_profiles
+    ADD CONSTRAINT recruiter_profile_company_name_key UNIQUE (company_name);
+
+
+--
+-- Name: recruiter_profiles recruiter_profile_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.recruiter_profiles
+    ADD CONSTRAINT recruiter_profile_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: roles roles_role_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.roles
+    ADD CONSTRAINT roles_role_name_key UNIQUE (role_name);
+
+
+--
+-- Name: testimonials testimonials_pkey; Type: CONSTRAINT; Schema: public; Owner: nocturndev
+--
+
+ALTER TABLE ONLY public.testimonials
+    ADD CONSTRAINT testimonials_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_email_key UNIQUE (email);
+
+
+--
+-- Name: users users_phonenumber_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_phonenumber_key UNIQUE (phonenumber);
+
+
+--
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: experiences fk_candidate_profile_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.experiences
+    ADD CONSTRAINT fk_candidate_profile_id FOREIGN KEY (candidate_profile_id) REFERENCES public.candidate_profiles(id);
+
+
+--
+-- Name: portofolios fk_candidate_profile_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.portofolios
+    ADD CONSTRAINT fk_candidate_profile_id FOREIGN KEY (candidate_profile_id) REFERENCES public.candidate_profiles(id);
+
+
+--
+-- Name: hire_messages fk_candidate_profiles_id; Type: FK CONSTRAINT; Schema: public; Owner: nocturndev
+--
+
+ALTER TABLE ONLY public.hire_messages
+    ADD CONSTRAINT fk_candidate_profiles_id FOREIGN KEY (candidate_profiles_id) REFERENCES public.candidate_profiles(id);
+
+
+--
+-- Name: hire_messages fk_recruiter_profiles_id; Type: FK CONSTRAINT; Schema: public; Owner: nocturndev
+--
+
+ALTER TABLE ONLY public.hire_messages
+    ADD CONSTRAINT fk_recruiter_profiles_id FOREIGN KEY (recruiter_profiles_id) REFERENCES public.recruiter_profiles(id);
+
+
+--
+-- Name: users fk_role_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT fk_role_id FOREIGN KEY (role_id) REFERENCES public.roles(id);
+
+
+--
+-- Name: candidate_profiles fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.candidate_profiles
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: recruiter_profiles fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.recruiter_profiles
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: testimonials fk_user_id; Type: FK CONSTRAINT; Schema: public; Owner: nocturndev
+--
+
+ALTER TABLE ONLY public.testimonials
+    ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
