@@ -125,7 +125,7 @@ psql -U postgres -p 5432 -h localhost -d db_binary.psql -f db_binary.psql.psql
 - Import our [API Documentation](https://documenter.getpostman.com/view/13579110/VUxLwoTN) on Postman (change the base url if you want use it on local)
 - After all the step is done you ready to go
 - Open the backend folder with your IDE
-- Open the IDE teriminal and run below command
+- Open the IDE terminal and run command below
 
 ```
 nodemon
@@ -162,7 +162,7 @@ the reason we say this is because our local env file have a credential data that
    
 <table>
 <tr>
-    <td style='text-align: center; background-color: #6661; font-weight: 600'>Lets cookin database structure</td>
+    <td style='text-align: center; background-color: #6661; font-weight: 600'>JOSHY database structure</td>
   </tr>
   <tr>
     <td><image src="https://res.cloudinary.com/nocturncloud/image/upload/v1662409726/joshy-app/README/db_dmf269.png" alt="login" width=100%></td>
